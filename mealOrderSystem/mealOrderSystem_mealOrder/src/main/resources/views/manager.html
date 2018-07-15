@@ -1,0 +1,95 @@
+<html>
+
+<head>
+<script src="/webjars/jquery/2.1.1/jquery.min.js"></script>
+<title>管理页面</title>
+</head>
+
+<body>
+	<p>管理页面</p>
+
+	<p>
+		点击<a href="/mealOrderSystem/goCreateMenu/">前往生成新的订餐目录</a>
+	</p>
+
+	<p>生成统计信息</p>
+	<p>输入日期，查看统计信息 例：20180707</p>
+	<input type="number" id="date" min="0" style="width: 150px" />
+	<input type="button" id="btn" value="提交" />
+	<br />
+	<br />
+	<table id="tb" border="1"
+		style="border-collapse: collapse; width: 650px;">
+		<tr>
+			<th>姓名</th>
+			<th>餐名</th>
+			<th>时间</th>
+			<th>单价</th>
+			<th>数量</th>
+		</tr>
+	</table>
+	<input type="button" id="download" value="下载数据" />
+	<script>
+      $("#btn").on("click", function(event) {
+     	  var date1 = $("#date").val();
+		  if(!date1||!$.trim(date1)||date1==0){
+    		  alert("请输入日期!");
+    		  return false;
+    	  }
+    	  $.ajax({
+				type : "POST", // 使用post方式
+				url : "/mealOrderSystem/mealOrderStatistics/",
+				contentType : "application/json",
+				data : JSON.stringify({
+					date : $("#date").val(),
+					download: 'false'
+				}), // 参数列表，stringify()方法用于将JS对象序列化为json字符串
+				dataType : "json", //预期服务器返回的数据类型。如果不指定，jQuery 将自动根据 HTTP 包 MIME 信息来智能判断
+				success : function(result) {
+					// 请求成功后的操作
+					//alert("ok");
+					var json=eval(result);
+					 $('#tb tr:gt(0)').remove();//删除之前的数据
+		                var s = '';
+		                for (var i = 0; i < json.length; i++) 
+		                	s += '<tr><td>' + json[i].stu_name + '</td><td>' + json[i].meal + '</td><td>' + json[i].eat_time + '</td>'
+		                    + '<td>' + json[i].price  + '</td><td>'+json[i].quantity+'</td>'+
+		                    '</tr>';
+		                $('#tb').append(s);
+		                
+				}
+			});
+      });
+      </script>
+
+	<script>
+      $("#download").on("click", function(event) {
+     	  var date1 = $("#date").val();
+		  if(!date1||!$.trim(date1)||date1==0){
+    		  alert("请输入日期!");
+    		  return false;
+    	  }
+		  var body = $(document.body),
+          form = $("<form method='get' style='display:none'></form>"),
+       input;
+        form.attr({ "action": "/mealOrderSystem/mealOrderStatistics/" });
+        input = $("<input type='hidden'>");
+        input.attr({ "name": "date" });
+        input.val( $("#date").val());
+        form.append(input);
+        input = $("<input type='hidden'>");
+        input.attr({ "name": "download" });
+        input.val( "true");
+        form.append(input);
+
+    //IE低版本和火狐下
+    form.appendTo(document.body);
+    form.submit();
+    document.body.removeChild(form[0]);
+
+      });
+      </script>
+
+
+</body>
+</html>

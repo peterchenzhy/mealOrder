@@ -1,0 +1,75 @@
+base 
+  Constants常量
+  Model 数据库model
+  Pojo  requestbean
+mealOrderSystem_mealOrder
+controller
+功能
+	功能：订餐
+	接口：@RequestMapping(value = "/mealOrderSystem/mealOrder/", method = RequestMethod.POST)
+	
+	功能：生成当日订餐目录
+	接口：@RequestMapping(value = "/mealOrderSystem/createNewMenu/", method = RequestMethod.POST)
+
+	功能：生成统计信息
+	接口：@RequestMapping(value = "/mealOrderSystem/mealOrderStatistics/", method = RequestMethod.GET)
+	
+	功能：获取可订餐页面列表(最近3天)
+	接口：@RequestMapping(value = "/mealOrderSystem/getMealMenuList/", method = RequestMethod.GET)
+	
+	功能：获取date日订餐页面
+	接口：@RequestMapping(value = "/mealOrderSystem/getMealMenuByDate/", method = RequestMethod.POST)
+	
+页面跳转
+	功能： 前往创建菜单页面
+	接口：@RequestMapping(value = "/mealOrderSystem/goCreateMenu/", method = RequestMethod.GET)
+	
+	功能： 主页
+	接口：@RequestMapping(value = "/mealOrderSystem/welcome", method = RequestMethod.GET)
+	
+	功能：管理页面
+	接口：@RequestMapping(value = "/mealOrderSystem/manager", method = RequestMethod.GET)
+	
+	
+meal_order	
+quantity	int(3)
+stu_name	varchar(10)
+meal	varchar(50)
+date	char(8)
+eat_time char(8)
+
+meal_info
+meal	varchar(50)
+producer	varchar(30)
+price	decimal(5,2)
+
+meal_menu
+date	char(8)
+meal	varchar(50)
+producer	varchar(30)
+price	decimal(5,2)
+
+order_statistics
+date	char(8)
+endtime	char(5)
+total_amount	decimal(8,2)
+total_count	int(5)
+noon_count	int(5)
+eve_count	int(5)
+is_used	tinyint(1)
+enddate	char(8)
+
+
+select * from meal_order ;
+select * from meal_info ;
+select * from meal_menu ;
+select  * from order_statistics;
+
+select  mo.stu_name,mo.meal,mo.eat_time,mi.price, mo.quantity 
+from meal_order  mo, meal_info mi 
+ where mo.date ='20180707'  and mi.meal =mo.meal  
+ order by mo.stu_name,mo.meal,mo.eat_time 
+ 
+ 
+ http://localhost:8090/mealOrderSystem/welcome
+ http://localhost:8090/mealOrderSystem/getMealMenuList/

@@ -1,0 +1,7 @@
+cn\czy\mealOrderSystem\base\util\CommonUtil.class
+cn\czy\mealOrderSystem\base\model\MealInfo.class
+cn\czy\mealOrderSystem\base\constant\Constants.class
+cn\czy\mealOrderSystem\base\model\OrderStatistics.class
+cn\czy\mealOrderSystem\base\pojo\CreateNewMenuRequestBean.class
+cn\czy\mealOrderSystem\base\pojo\MealOrderRequestBean.class
+cn\czy\mealOrderSystem\base\model\MealOrder.class
