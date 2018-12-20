@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="cn.czy.mealOrderSystem.orderMeal.mapper.DaoMapper">
+	
+	<select id="findMealInfo"
+		resultType="cn.czy.mealOrderSystem.base.model.MealInfo">
+    <![CDATA[
+            select  meal as meal,
+			 producer as producer,
+			 price as price
+			 from meal_info
+			 where 1 = 1
+        ]]>
+	</select>
+	<select id="queryMealOrder"
+		resultType="cn.czy.mealOrderSystem.base.model.MealOrder">
+    <![CDATA[
+           select date as date ,stu_name as stuName ,meal  as meal ,quantity  as quantity,eat_time as eatTime
+           from  meal_order 
+           where date = #{date} and stu_name= #{name}
+        ]]>
+	</select>
+
+	<select id="queryOrderStatistics"
+		resultType="cn.czy.mealOrderSystem.base.model.OrderStatistics">
+    <![CDATA[
+   SELECT date as date , endtime as endTime, total_amount as totalAmount, 
+          total_count as totalCount, noon_count as noonCount, eve_count as eveCount,
+          is_used as isUsed, enddate as endDate 
+    FROM order_statistics  
+           where is_used = #{isUsed} and  enddate<= #{date} and  endtime <= #{endTime}
+        ]]>
+	</select>
+
+	<update id="updateOrderStatistics"
+		parameterType="cn.czy.mealOrderSystem.base.model.OrderStatistics">
+		UPDATE order_statistics
+		SET is_used = #{os.isUsed}
+		WHERE date = #{os.date}
+	</update>
+	<update id="mealOrderStatisticsUpdateCount">
+		update order_statistics os join
+		( select IFNULL(sum(totalprice),0) as total_price ,IFNULL(sum(quantity),0) as
+		total_quantity from (
+		select mo.date , mo.stu_name , mo.quantity, mo.quantity*mi.price as
+		totalprice
+		from meal_order mo,meal_info mi
+		where mo.date= #{date} and mo.meal = mi.meal
+		) tmp1) temp1,
+		(select IFNULL(noon1.noon,0) as noon_quantity, IFNULL(eve1.eve,0) as eve_quantity from
+		(select sum(quantity) as noon from meal_order where eat_time ="中午"  and date = #{date}) as noon1,
+		(select sum(quantity) as eve from meal_order where eat_time ="晚上" and date = #{date}) as eve1)
+		temp2
+		set os.total_amount = temp1.total_price ,
+		os.noon_count = temp2.noon_quantity ,
+		os.eve_count= temp2.eve_quantity ,
+		os.total_count= temp1.total_quantity,
+		os.is_statistical= true
+		where os.date = #{date} and os.is_used=false and os.is_statistical = false
+	</update>
+</mapper>

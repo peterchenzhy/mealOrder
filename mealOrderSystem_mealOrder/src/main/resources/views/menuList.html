@@ -1,0 +1,133 @@
+
+<html>
+<head>
+<script src="/webjars/jquery/2.1.1/jquery.min.js"></script>
+<title>menuList</title>
+</head>
+
+<body>
+	<p>请点击“开始订餐”后的日期</p>
+
+	<#list list as list> 开始订餐：<a href="" class="${list.date}">${list.date}</a>
+	<br />
+	<script>
+		$(".${list.date}").on("click", function(event) {
+			event.preventDefault(); // 使a自带的方法失效，即无法向addStudent.action发出请求
+			 $('#tb1 tr:gt(0)').remove();//删除之前的数据
+			 $('#nameTxt').val("");
+			$.ajax({
+				type : "POST", // 使用post方式
+				url : "/mealOrderSystem/getMealMenuByDate/",
+				contentType : "application/json",
+				data : JSON.stringify({
+					date : "${list.date}"
+				}), // 参数列表，stringify()方法用于将JS对象序列化为json字符串
+				dataType : "json", //预期服务器返回的数据类型。如果不指定，jQuery 将自动根据 HTTP 包 MIME 信息来智能判断
+				success : function(result) {
+					// 请求成功后的操作
+					//alert("ok");
+					var json=eval(result);
+					 $('#tb tr:gt(0)').remove();//删除之前的数据
+		                var s = '';
+		                for (var i = 0; i < json.length; i++) s += '<tr><td>' + json[i].date + '</td><td>' + json[i].meal + '</td><td>' + json[i].price + '</td>'
+		                    + '<td>' + json[i].producer  + '</td><td><input type="checkbox" id=chk'+i+' name="checkbox" class="checkboxclass"/></td><td><input type="number" class="numberclass" name="quantity" min="0" max="99" style="width:50px"/></td>'+
+		                    '<td><select><option value = "noon">中午</option><option value = "eve">晚上</option></select></td></tr>';
+		                $('#tb').append(s);
+		                
+				}
+			});
+		});
+	</script> 
+	</#list>
+	
+    
+    <table id="tb" border="1" style="border-collapse: collapse;width:650px;" >
+        <tr>
+          <th>日期</th>
+          <th>餐名</th>
+          <th>单价</th>
+          <th>供应商</th>
+            <th>选择</th>
+          <th>份数</th>
+          <th>时间</th>
+        </tr>
+      </table>
+      <div id =tj >
+      请输入姓名 <input type="text" id="nameTxt" style="width:80px"/><input type="button" id="btn" value="提交" />
+      </div>
+      
+      <br/>
+      <br/>
+      你的订购记录（如有错误请联系老师手工备注，系统暂不支持修改订单功能）
+      <table id="tb1" border="1" style="border-collapse: collapse;width:650px;" >
+      <tr>
+          <th>日期</th>
+          <th>学生姓名</th>
+          <th>餐名</th>
+          <th>份数</th>
+          <th>时间</th>
+        </tr>
+      </table>
+      
+      <script>
+      $("#btn").on("click", function(event) {
+    	  var stuName = $("#nameTxt").val();
+    	  if(!stuName||!$.trim(stuName)){
+    		  alert("请填写姓名!");
+    		  return false;
+    	  }
+    	  //alert("btn");
+    	  var orderData = [];
+    	  var i = 0 ;
+    	  $("[type='checkbox']:checked").each(function(chk){
+    		  //我想吧checkbox所在行的数据取出来放到下面orderData中
+    		  var tmp =$(this).parent().parent().children();
+    		  //var stuName = $("#nameTxt").val();
+    		  var quantity = tmp.eq(5).find("input[type='number']").val();
+    		  if(!quantity||!$.trim(quantity)||quantity==0){
+    			  alert("请填写预定数量!");
+    			  return false;
+    		  }
+    		  orderData[i] = {"mealName":tmp.eq(1).text(),"stuName":stuName,"quantity":quantity,"date":tmp.eq(0).text(),"eatTime":tmp.eq(6).find("option:selected").text()};
+    		  i=i+1;
+    	  });
+    	  if(i>0){
+    	  $.ajax({
+				type : "POST", // 使用post方式
+				url : "/mealOrderSystem/mealOrder/",
+				contentType : "application/json",
+				data : JSON.stringify({
+					orderData
+				}), // 参数列表，stringify()方法用于将JS对象序列化为json字符串
+				//dataType : "String",//预期服务器返回的数据类型。如果不指定，jQuery 将自动根据 HTTP 包 MIME 信息来智能判断
+				success : function(result) {
+					// 请求成功后的操作
+					//刷新页面
+					$("#nameTxt").val("");
+					$(".numberclass").val("");
+					$(".checkboxclass").attr("checked",false); 
+					alert("处理成功，订餐结果请看下面表格");
+					var json=eval(result);
+					 $('#tb1 tr:gt(0)').remove();//删除之前的数据
+		                var s = '';
+		                for (var i = 0; i < json.length; i++) 
+		                	s += '<tr><td>' + json[i].date + '</td><td>' + json[i].stuName + '</td><td>' + json[i].meal + '</td>'
+		                    + '<td>' + json[i].quantity  + '</td><td>'+json[i].eatTime+'</td>'+
+		                    '</tr>';
+		                    
+		                $('#tb1').append(s);
+		                
+				},
+				error:function(result){
+					alert('系统错误，请稍后再试');
+			    },
+			    complete:function(){
+			        console.log('结束')
+			    }
+			});
+    	  }
+      });
+      </script> 
+</body>
+
+</html>
