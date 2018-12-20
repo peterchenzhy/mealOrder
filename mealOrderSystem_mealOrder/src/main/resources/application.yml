@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: mealOrderSystem-mealOrder
+  datasource: 
+    url: jdbc:mysql://localhost:3306/mealordersystem?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver 
+    username: czy
+    password: czy1377449
+      # 初始化大小，最小，最大
+    initialSize: 1
+    minIdle: 3
+    maxActive: 20
+      # 配置获取连接等待超时的时间
+    maxWait: 60000
+    
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  
+  freemarker:
+    allowRequestOverride: false
+    cache: true
+    checkTemplateLocation: true
+    charset: UTF-8
+    contentType: text/html
+    exposeRequestAttributes: true
+    exposeSessionAttributes: false
+    exposeSpringMarcoHelpers: false    
+    requestContextAttribute: rc
+    #模板加载后缀
+    suffix: .html
+    #模板加载路径
+    templateLoaderPath: classpath:/views/
+        
+server:
+  port: 8090
+  tomcat:
+    uriEncoding: UTF-8  
+
+mybatis:
+  #实体类所做包
+  #type-aliases-package: learning.model
+  #mapper.xml所在位置
+  mapper-locations: classpath*:cn/czy/mealOrderSystem/orderMeal/mapper/*.xml
+
+
+logging:
+    # 配置spring web日志级别
+    level:
+        org.springframework.web: INFO 
+        cn.czy.mealOrderSystem.orderMeal.mapper: DEBUG
+    # 日志文件,绝对路径或相对路径
+    file: D:/CzyLogs/mealOrderSystem/mealOrderSystem_mealOrder-${server.port}.log
+    root: INFO  
+#暴露所有auctutar端点（不安全，不建议全部开启）    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  
