@@ -2,8 +2,8 @@ spring:
   application:
     name: mealOrderSystem-mealOrder
   datasource: 
-    #url: jdbc:mysql://47.100.242.85:6670/mealordersystem?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    url: jdbc:mysql://localhost:6670/mealordersystem?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://47.100.242.85:6670/mealordersystem?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    #url: jdbc:mysql://localhost:6670/mealordersystem?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver 
     username: root

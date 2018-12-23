@@ -6,6 +6,7 @@ tomcat
 /log
 /*/logs
 /*/log
+*.log
 
 # Binaries
 *.7z
