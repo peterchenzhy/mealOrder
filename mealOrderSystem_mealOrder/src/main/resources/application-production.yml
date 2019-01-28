@@ -37,7 +37,7 @@ spring:
     templateLoaderPath: classpath:/views/
         
 server:
-  port: 8090
+  port: 8099
   tomcat:
     uriEncoding: UTF-8  
 
